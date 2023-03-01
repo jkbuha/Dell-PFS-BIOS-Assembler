@@ -1,4 +1,12 @@
 # Dell PFS BIOS Assembler
+
+**2023-03-01**
+
+*note by jkbuha*
+Have forked the code and made changes to support the latest BIOS headers from Dell. The original caveats, disclaimers and warnings still apply: namely that this will likely brick your machine due to mismatching BIOS and EC data. I have successfully downgraded the XPS 9520 Bios from v1.8.1 to v1.6.1 using the minimal possible changes, but YMWV most definitely. You have been warned :)
+
+---
+
 This script makes **Downgrade-able BIOS update** file from Dell original BIOS updates.  
 
 **Due to a claim from Dell that many people have failed to downgrade and their machines could not boot up, the video tutorial is taken down, the reddit thread is closed, and this repo is here as an archive only**
