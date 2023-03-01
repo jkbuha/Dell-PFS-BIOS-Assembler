@@ -30,6 +30,7 @@ Note:
 import os
 import sys
 import zlib
+import lzma
 import ctypes
 import struct
 import argparse
@@ -226,7 +227,7 @@ def get_pfs_entry(buffer, offset):
 def chk_xor_8(data, init_value):
     value = init_value
     for byte in data: value = value ^ byte
-    value = value ^ 0x0
+    value ^= 0x0
 
     return value
 
@@ -353,6 +354,11 @@ for file in all_files:
                 entry_valid = True
                 entry_type = 'MODEL_INFO'
 
+            # Get Signature Information from the PFS Entry with GUID D086AFEE3ADBAEA94D5CED583C880BB7
+            elif entry_guid == 'D086AFEE3ADBAEA94D5CED583C880BB7':
+                signature_info = entry_data
+                entry_type = 'SIG_INFO'
+
             # Get Nested PFS from the PFS Entry with GUID 900FAE60437F3AB14055F456AC9FDA84
             elif entry_guid == '900FAE60437F3AB14055F456AC9FDA84':
                 entry_type = 'NESTED_PFS'  # Nested PFS are usually zlib-compressed so it might change to 'ZLIB' later
@@ -432,11 +438,12 @@ for entry in entries:
 
 payload_len = len(payload)
 payload_checksum = ~zlib.crc32(payload, 0) & 0xFFFFFFFF
+#payload_checksum = ~lzma.crc32(payload, 0) & 0xFFFFFFFF
 
 # payload header
 header = PFS_HDR()
 header.Tag = b'PFS.HDR.'
-header.HeaderVersion = 1
+header.HeaderVersion = 2
 header.PayloadSize = payload_len
 
 # payload footer
@@ -450,6 +457,7 @@ uncompressed_data = struct_to_bytearray(header) + payload + struct_to_bytearray(
 
 # compress it
 compressed_data = zlib.compress(uncompressed_data)
+#compressed_data = lzma.compress(uncompressed_data)
 compressed_data_len = len(compressed_data)
 
 # BIOS section header
