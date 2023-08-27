@@ -674,16 +674,15 @@ def pfs_extract(buffer, pfs_index, pfs_name, pfs_count) :
 
 		# Convert file name in GUID format to human readable name
 		if is_disassemble:
+			guid_name = os.path.join(output_entries_path, "%s-%s.bin" % (file_guid, file_version_org))
+			bios_version_name = os.path.join(output_entries_path, "%s-%s.bin" % (file_name, bios_version))
+			human_readable_name = os.path.join(output_entries_path, "%s-%s.bin" % (f'{entry_index} - {file_name}', file_version_org))
 			if file_type == 'MODEL_INFO' or file_type == 'PFS_INFO' :
 				# Replace GUID by NAME and FILE Version by BIOS Version
-				os.rename(
-					os.path.join(output_entries_path, "%s-%s.bin" % (file_guid, file_version_org)),
-					os.path.join(output_entries_path, "%s-%s.bin" % (file_name, bios_version)))
-			else :
+				os.rename(guid_name, bios_version_name)
+			else:
 				# Replace GUID by NAME only
-				os.rename(
-					os.path.join(output_entries_path, "%s-%s.bin" % (file_guid, file_version_org)),
-					os.path.join(output_entries_path, "%s-%s.bin" % (file_name, file_version_org)))
+				os.rename(guid_name, human_readable_name)
 
 		data_ext = '.data.bin' if is_advanced else '.bin' # Simpler Data Extension for non-advanced users
 		meta_ext = '.meta.bin' if is_advanced else '.bin' # Simpler Metadata Extension for non-advanced users
